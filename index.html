@@ -1,0 +1,55 @@
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+ <script src="//code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
+
+  <script>
+  progress = function(num) {
+    $( "#progressbar" ).progressbar({
+      value: num
+    });
+  }
+  </script>
+<script type="text/javascript">
+	nonce = 1
+	old_url = null
+
+	success = function(data) {
+		console.log(data)
+		d = JSON.parse(data.responseText)
+		url = d.url
+		smelliness = d.smelliness
+		smelliness = Math.max((smelliness - .860)/(.875 - .860), 0)
+		smelliness = Math.pow(smelliness, 3)
+		smelliness = 100*smelliness
+		console.log(smelliness)
+		progress(smelliness)
+		if(old_url != url) {
+			console.log("New smell")
+			$("#smellometer").attr("src", url)
+			old_url = url
+		} else {
+			console.log("Got ", url)
+		}
+	}
+	
+	getState = function() {
+		nonce++
+		console.log("Getting state")
+		result = $.ajax('/state.html',  {nonce: nonce, complete:success})
+		console.log("Got state")
+	}
+
+	window.setInterval(getState, 100)
+
+
+
+</script>
+
+<h1>Smellometer</h1>
+<div id="progressbar"></div>
+
+
+<iframe id="smellometer" width=90% height=90% src="http://giphy.com/embed/feqkVgjJpYtjy">
+</iframe>
+
